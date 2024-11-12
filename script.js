@@ -3,15 +3,15 @@ document.addEventListener("DOMContentLoaded", function () {
 	const selectElements = document.querySelectorAll(".factor"); // Находим все поля с данными
 	let changedFields = []; // Массив для хранения последних двух измененных полей
 
-	// Находим все select элементы
-	selectElements.forEach((select) => {
-		// Если есть выбранная по умолчанию опция
-		const selectedOption = select.querySelector("option[selected]");
-		if (selectedOption) {
-			// Скрываем выбранную опцию
-			selectedOption.style.display = "none";
-		}
-	});
+	//// Находим все select элементы
+	//selectElements.forEach((select) => {
+	//	// Если есть выбранная по умолчанию опция
+	//	const selectedOption = select.querySelector("option[selected]");
+	//	if (selectedOption) {
+	//		// Скрываем выбранную опцию
+	//		selectedOption.style.display = "none";
+	//	}
+	//});
 
 	// Обработчик событий полей данных
 	fields.forEach((field) => {
