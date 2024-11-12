@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-	const fields = document.querySelectorAll(".value-wKDFVutX"); // Находим все поля с данными
-	const selectElements = document.querySelectorAll(".factor-VU3qFQdv"); // Находим все поля с данными
+	const fields = document.querySelectorAll(".value"); // Находим все поля с данными
+	const selectElements = document.querySelectorAll(".factor"); // Находим все поля с данными
 	let changedFields = []; // Массив для хранения последних двух измененных полей
 
 	// Находим все select элементы

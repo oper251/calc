@@ -14,8 +14,8 @@
 	box-shadow: 0 8px 25px 1px var(--box-shadow-color);
 	max-width: 400px;
 
-	.value-wKDFVutX,
-	.factor-VU3qFQdv {
+	.value,
+	.factor {
 		height: 48px;
 		padding: 5px 10px 5px 10px;
 		border: 1px solid var(--main-color);
@@ -26,14 +26,14 @@
 		-moz-appearance: none;
 		appearance: none;
 	}
-	.value-wKDFVutX {
+	.value {
 		width: 100%;
 		color: var(--main-color);
 	}
-	.value-wKDFVutX::placeholder {
+	.value::placeholder {
 		color: var(--box-shadow-color);
 	}
-	.factor-VU3qFQdv {
+	.factor {
 		background: var(--main-color);
 		color: white;
 		text-align: center;
@@ -48,6 +48,7 @@
 		box-sizing: border-box;
 	}
 }
+
 
 @media (max-width: 600px) {
 	.calcOma-widget-container span {
@@ -68,7 +69,7 @@
 }
 
 @media (max-width: 350px) {
-	.value-wKDFVutX {
+	.value {
 		font-size: 18px !important;
 	}
 	.calcOma-widget-container span {
