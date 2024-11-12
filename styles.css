@@ -13,6 +13,7 @@
 	background-color: var(--background-color);
 	box-shadow: 0 8px 25px 1px var(--box-shadow-color);
 	max-width: 400px;
+	margin: auto;
 
 	.value,
 	.factor {
