@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			};
 
 			let I, U, R, P;
-document.getElementsByTagName("span")[0].innerHTML+="<br>"+"e";
+//document.getElementsByTagName("span")[0].innerHTML+="<br>"+"e";
 			switch (combination) {
 				case "1100": // Известны ток и напряжение
 					[I, U] = combinationValue;
