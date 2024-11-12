@@ -22,6 +22,9 @@
 		border-radius: 5px;
 		font-size: 23px;
 		outline: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
 	}
 	.value-wKDFVutX {
 		width: 100%;
@@ -43,9 +46,6 @@
 		transition: all 0.5s ease;
 		font-family: Roboto, sans-serif;
 		box-sizing: border-box;
-		appearance: none;
-		-webkit-appearance: none;
-		-moz-appearance: none;
 	}
 }
 
