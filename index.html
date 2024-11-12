@@ -5,67 +5,37 @@
 		<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" />
 		<link rel="stylesheet" href="styles.css" />
 		<script src="script.js"></script>
-		<!--
-		<style>
-			body {
-				background-color: red;
-			}
-		</style>
-		-->
 	</head>
 
 	<body onload="onPageLoaded()">
-		<!--             <center> -->
-
-		<div class="calcOma-widget-container">
-			<span>!#Закон ома онлайн калькулятор</span>
-			<div class="calcOma-block">
-				<div class="calcParam">
-					<input class="flex-grow" type="text" placeholder="Сила тока (I)" inputmode="decimal" />
-					<select class="fixed-width-select">
-						<option value="0.000001">µA</option>
-						<option value="0.001">mA</option>
-						<option value="1" selected>A</option>
-					</select>
-				</div>
-				<div class="calcParam">
-					<input class="flex-grow" type="text" placeholder="Напряжение (U)" inputmode="decimal" />
-					<select class="fixed-width-select">
-						<option value="0.000001">µV</option>
-						<option value="0.001">mV</option>
-						<option value="1" selected>V</option>
-					</select>
-				</div>
-				<div class="calcParam">
-					<input
-						class="flex-grow"
-						type="text"
-						placeholder="Сопротивление (R)"
-						inputmode="decimal" />
-					<select class="fixed-width-select">
-						<option value="0.001">mΩ</option>
-						<option value="1" selected>Ω</option>
-						<option value="1000">kΩ</option>
-						<option value="1000000">MΩ</option>
-					</select>
-				</div>
-				<div class="calcParam">
-					<input class="flex-grow" type="text" placeholder="Мощность (P)" inputmode="decimal" />
-					<select class="fixed-width-select">
-						<option value="1" selected>W</option>
-						<option value="1000">kW</option>
-					</select>
-				</div>
-
-				<img
-					src="https://allcalc.ru/addition/om/488.gif"
-					alt="все формулы закона ома, кругом"
-					title="все формулы закона ома, кругом"
-					style="width: 250px" />
-				<p id="screen-size" hidden="true">123</p>
+		<div style="border: solid 2px transparent">
+			<div class="calcOma-widget">
+				<input class="value-wKDFVutX" type="text" placeholder="Сила тока (I)" inputmode="decimal" />
+				<select class="factor-VU3qFQdv">
+					<option value="1" selected>A</option>
+					<option value="0.001">mA</option>
+					<option value="0.000001">µA</option>
+				</select>
+				<input class="value-wKDFVutX" type="text" placeholder="Напряжение (U)" inputmode="decimal" />
+				<select class="factor-VU3qFQdv">
+					<option value="1" selected>V</option>
+					<option value="0.001">mV</option>
+					<option value="0.000001">µV</option>
+				</select>
+				<input class="value-wKDFVutX" type="text" placeholder="Сопротивление (R)" inputmode="decimal" />
+				<select class="factor-VU3qFQdv">
+					<option value="0.001">mΩ</option>
+					<option value="1" selected>Ω</option>
+					<option value="1000">kΩ</option>
+					<option value="1000000">MΩ</option>
+				</select>
+				<input class="value-wKDFVutX" type="text" placeholder="Мощность (P)" inputmode="decimal" />
+				<select class="factor-VU3qFQdv">
+					<option value="1" selected>W</option>
+					<option value="1000">kW</option>
+				</select>
+				<span>i</span>
 			</div>
 		</div>
-
-		<!--             </center> -->
 	</body>
 </html>

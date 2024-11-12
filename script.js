@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-	const fields = document.querySelectorAll(".calcOma-widget-container .flex-grow"); // Находим все поля с данными
-	const selectElements = document.querySelectorAll(".calcOma-widget-container .fixed-width-select"); // Находим все поля с данными
+	const fields = document.querySelectorAll(".value-wKDFVutX"); // Находим все поля с данными
+	const selectElements = document.querySelectorAll(".factor-VU3qFQdv"); // Находим все поля с данными
 	let changedFields = []; // Массив для хранения последних двух измененных полей
 
 	// Находим все select элементы
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			};
 
 			let I, U, R, P;
-
+document.getElementsByTagName("span")[0].innerHTML+="<br>"+"e";
 			switch (combination) {
 				case "1100": // Известны ток и напряжение
 					[I, U] = combinationValue;
