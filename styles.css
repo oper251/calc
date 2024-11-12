@@ -23,9 +23,9 @@
 		border-radius: 5px;
 		font-size: 23px;
 		outline: none;
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
+		-webkit-appearance: none !important;
+		-moz-appearance: none !important;
+		appearance: none !important;
 	}
 	.value {
 		width: 100%;
