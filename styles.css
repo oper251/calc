@@ -38,14 +38,13 @@
 		background: var(--main-color);
 		color: white;
 		text-align: center;
-
-		option:checked {
-			display: none;
-		}
 	}
 	option {
 		background-color: var(--background-color);
 		color: var(--main-color);
+	}
+	option:checked {
+		display: none;
 	}
 
 	.changed {
