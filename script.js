@@ -1,51 +1,37 @@
 document.addEventListener("DOMContentLoaded", function () {
 	const fields = document.querySelectorAll(".value"); // Находим все поля с данными
 	const selectElements = document.querySelectorAll(".factor"); // Находим все поля с данными
-	let changedFields = []; // Массив для хранения последних двух измененных полей{"path":"/mnt/HTML+JS+CSS/2024-11-12_CalcHtml/script.js"}
-
-	//// Находим все select элементы
-	//selectElements.forEach((select) => {
-	//	// Если есть выбранная по умолчанию опция
-	//	const selectedOption = select.querySelector("option[selected]");
-	//	if (selectedOption) {
-	//		// Скрываем выбранную опцию
-	//		selectedOption.style.display = "none";
-	//	}
-	//});
+	let changedFields = []; // Массив для хранения последних двух измененных полей
 
 	// Обработчик событий полей данных
 	fields.forEach((field) => {
 		field.addEventListener("input", function () {
 			this.value = this.value.replace(",", ".");
-			// Оставляем только первую точку и цифры
 			this.value = this.value.replace(/[^.\d]/g, ""); // Удаление недопустимых символов
 			this.value = this.value.replace(/^\./, "0."); //Замена ведущей точки на 0.
-			const parts = this.value.split("."); // Разделение по точкам
+			const parts = this.value.split("."); // Разделение по точкам - запрет нескольких точек
 			if (parts.length > 1) {
 				this.value = parts[0] + "." + parts.slice(1).join(""); // Оставляем первую точку, удаляя остальные
 			}
-			// Замена ведущих нулей на один ноль, если необходимо
-			this.value = this.value.replace(/^0+(?=\d)/, "");
+			this.value = this.value.replace(/^0+(?=\d)/, ""); // Замена ведущих нулей на один ноль, если необходимо
 			changeFieldColor(this); // Меняем цвет поля
 		});
 	});
 
 	// Обработчик событий делителей
 	selectElements.forEach((select) => {
-		let previousDivider; // Инициализируем переменную предидущего делителя
+		let factor_old; // Инициализируем переменную предидущего делителя
 		select.addEventListener("click", function () {
-			previousDivider = select.value; // получаем значение предидущего делителя при клике по select
+			factor_old = select.value; // получаем значение предидущего делителя при клике по select
 		});
 
 		select.addEventListener("input", function () {
-			//Array.from(select.options).forEach((option) => (option.style.display = "block"));
-			//select[select.options.selectedIndex].style.display = "none";
 			// Получаем новое значение делителя
-			newDivider = select.value;
-			previousValue = select.previousElementSibling.value;
-			if (previousValue > 0) {
+			factor_new = select.value;
+			value_old = select.previousElementSibling.value;
+			if (value_old > 0) {
 				// Не пересчитываем, если ноль или пусто
-				select.previousElementSibling.value = (previousValue * previousDivider) / newDivider;
+				select.previousElementSibling.value = (value_old * factor_old) / factor_new;
 			}
 		});
 	});
@@ -92,7 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			};
 
 			let I, U, R, P;
-//document.getElementsByTagName("span")[0].innerHTML+="<br>"+"e";
 			switch (combination) {
 				case "1100": // Известны ток и напряжение
 					[I, U] = combinationValue;
@@ -140,9 +125,9 @@ document.addEventListener("DOMContentLoaded", function () {
 function onPageLoaded() {
 	console.log("Тест console.log");
 	document.addEventListener("DOMContentLoaded", function () {
-	const styleSheet = document.querySelector("style").innerHTML;
-	document.querySelector("style").innerHTML = styleSheet + " /* " + Date.now() + " */";
-});
+		const styleSheet = document.querySelector("style").innerHTML;
+		document.querySelector("style").innerHTML = styleSheet + " /* " + Date.now() + " */";
+	});
 }
 window.onload = function () {
 	document.getElementById("screen-size").textContent = Date.now();
