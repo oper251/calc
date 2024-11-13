@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 	const fields = document.querySelectorAll(".value"); // Находим все поля с данными
 	const selectElements = document.querySelectorAll(".factor"); // Находим все поля с данными
-	let changedFields = []; // Массив для хранения последних двух измененных полей
+	let changedFields = []; // Массив для хранения последних двух измененных полей{"path":"/mnt/HTML+JS+CSS/2024-11-12_CalcHtml/script.js"}
 
 	//// Находим все select элементы
 	//selectElements.forEach((select) => {
@@ -139,6 +139,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function onPageLoaded() {
 	console.log("Тест console.log");
+	document.addEventListener("DOMContentLoaded", function () {
+	const styleSheet = document.querySelector("style").innerHTML;
+	document.querySelector("style").innerHTML = styleSheet + " /* " + Date.now() + " */";
+});
 }
 window.onload = function () {
 	document.getElementById("screen-size").textContent = Date.now();
