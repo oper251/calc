@@ -10,61 +10,66 @@
 		<script src="script.js"></script>
 		<style>
 			:root {
-				--main-color: #ff7400; /* основной цвет */
-				--choice-color: #ff740019; /* подсветка константных величин и select 10%*/
-				--box-shadow-color: #ff740050; /* тень 30%*/
+				--main-color: #ff7400;
+				--choice-color: #ff740019;
+				--box-shadow-color: #ff740050;
 				--background-color: white;
 			}
 
 			.calcOma-widget {
-				display: grid; /* https://skillbox.ru/media/code/uchimsya-verstat-v-setke-bolshoy-gayd-po-css-grid */
+				display: grid;
 				grid-template-columns: 1fr 60px;
-				gap: 10px 10px;
+				gap: 10px;
 				padding: 10px;
 				background-color: var(--background-color);
 				box-shadow: 0 8px 25px 1px var(--box-shadow-color);
 				max-width: 400px;
 				margin: auto;
+			}
 
-				.value,
-				.factor {
-					height: 48px;
-					padding: 5px 10px 5px 10px;
-					border: 1px solid var(--main-color);
-					border-radius: 5px;
-					font-size: 23px;
-					outline: none;
-					-webkit-appearance: none;
-					-moz-appearance: none;
-					appearance: none;
-				}
-				.value {
-					width: 100%;
-					color: var(--main-color);
-				}
-				.value::placeholder {
-					color: var(--box-shadow-color);
-				}
-				.factor {
-					background: var(--main-color);
-					color: white;
-				}
-				option {
-					background-color: var(--background-color);
-					color: var(--main-color);
-				}
-				option:checked {
-					display: none;
-				}
+			.value,
+			.factor {
+				height: 48px !important;
+				padding: 5px 10px !important;
+				border: 1px solid var(--main-color) !important;
+				border-radius: 5px !important;
+				font-size: 23px !important;
+				outline: none;
+				-webkit-appearance: none;
+				-moz-appearance: none;
+				appearance: none;
+			}
 
-				.changed {
-					background: var(--choice-color) !important;
-				}
-				* {
-					transition: all 0.5s ease;
-					font-family: Roboto, sans-serif;
-					box-sizing: border-box;
-				}
+			.value {
+				width: 100%;
+				color: var(--main-color) !important;
+			}
+
+			.value::placeholder {
+				color: var(--box-shadow-color);
+			}
+
+			.factor {
+				background: var(--main-color);
+				color: white;
+			}
+
+			/* Стиль для option */
+			option {
+				background-color: var(--background-color) !important;
+				color: var(--main-color) !important;
+			}
+
+			/* Применение стиля changed */
+			.changed {
+				background: var(--choice-color) !important;
+			}
+
+			/* Универсальные стили */
+			* {
+				transition: all 0.5s ease;
+				font-family: Roboto, sans-serif;
+				box-sizing: border-box;
 			}
 
 			body {
@@ -119,7 +124,7 @@
 					<option value="1000">kW</option>
 				</select>
 			</div>
-			<br />10
+			<br />11
 		</div>
 	</body>
 </html>
