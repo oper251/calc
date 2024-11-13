@@ -38,8 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 
 		select.addEventListener("input", function () {
-			Array.from(select.options).forEach((option) => (option.style.display = "block"));
-			select[select.options.selectedIndex].style.display = "none";
+			//Array.from(select.options).forEach((option) => (option.style.display = "block"));
+			//select[select.options.selectedIndex].style.display = "none";
 			// Получаем новое значение делителя
 			newDivider = select.value;
 			previousValue = select.previousElementSibling.value;
