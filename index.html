@@ -4,6 +4,7 @@
 		<title>Закон Ома - онлайн калькулятор</title>
 		<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" />
 		<script src="script.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/big.js/6.2.2/big.js"></script>
 		<style>
 			:root {
 				--main-color: #ff7400;
@@ -117,5 +118,21 @@
 				<option value="1000">kW</option>
 			</select>
 		</div>
+		<!--<br /><br /><a style="font-family: monospace; font-size: 19px">console.log():</a>-->
+		<!-- Фрейм с вертикальной прокруткой -->
+		<br /><br />
+		<h1>console.log():</h1>
+		<iframe
+			id="consoleLog"
+			style="overflow-y: scroll; width: 100%; height: 800px"
+			title="Пример содержимого с прокруткой"
+			srcdoc="
+                <html>
+                    <body style='font-family: monospace; font-size: 19px;'>
+                       <a ></a>
+                    </body>
+                </html>
+ 					">
+		</iframe>
 	</body>
 </html>

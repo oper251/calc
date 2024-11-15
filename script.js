@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				this.value = parts[0] + "." + parts.slice(1).join(""); // Оставляем первую точку, удаляя остальные
 			}
 			this.value = this.value.replace(/^0+(?=\d)/, ""); // Замена ведущих нулей на один ноль, если необходимо
+			this.value = this.value.replace(/^([\d\.]{1,20})?.*/, "$1"); // Запрет ввода более 20 цифр с запятой
 			changeFieldColor(this); // Меняем цвет поля
 		});
 	});
@@ -31,7 +32,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			value_old = select.previousElementSibling.value;
 			if (value_old > 0) {
 				// Не пересчитываем, если ноль или пусто
-				select.previousElementSibling.value = (value_old * factor_old) / factor_new;
+				//select.previousElementSibling.value = (value_old * factor_old) / factor_new;
+				select.previousElementSibling.value = crutchBigjs(
+					crutchBigjs(value_old, factor_old, "*"),
+					factor_new,
+					"/"
+				);
+				changeFieldColor(this.previousElementSibling);
 			}
 		});
 	});
@@ -59,21 +66,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			fields.forEach((field, num) => {
 				if (field.classList.contains("changed")) {
-					const value = parseFloat(field.value) * parseFloat(field.nextElementSibling.value); // Учитываем делитель для известных параметров
 					combination += "1";
-					combinationValue.push(value);
+					combinationValue.push(
+						new Big(field.value).times(field.nextElementSibling.value).toString() // Значение * делитель
+					);
 				} else {
 					combination += "0";
 					positionsToBeCalculated.push(num);
 				}
 			});
 
-			// Функция для установки значений с учетом делителя
+			// Функция для установки вычисленных значений с учетом делителя
 			const setCalculatedValues = (calculatedValues) => {
 				calculatedValues.forEach((val, index) => {
 					const field = fields[positionsToBeCalculated[index]];
-					const divider = parseFloat(field.nextElementSibling.value); // Получаем делитель
-					field.value = val / divider; // Применяем делитель к результату
+					const value = crutchBigjs(val, field.nextElementSibling.value, "/");
+					field.value = crutchBigjs(
+						value,
+						Math.max(20 - Math.floor(value).toString().length, 0),
+						"round"
+					);
 				});
 			};
 
@@ -81,38 +93,38 @@ document.addEventListener("DOMContentLoaded", function () {
 			switch (combination) {
 				case "1100": // Известны ток и напряжение
 					[I, U] = combinationValue;
-					R = U / I;
-					P = U * I;
+					R = crutchBigjs(U, I, "/");
+					P = crutchBigjs(U, I, "*");
 					setCalculatedValues([R, P]);
 					break;
 				case "1010": // Известны ток и сопротивление
 					[I, R] = combinationValue;
-					U = I * R;
-					P = U * I;
+					U = crutchBigjs(I, R, "*");
+					P = crutchBigjs(U, I, "*");
 					setCalculatedValues([U, P]);
 					break;
 				case "1001": // Известны ток и мощность
 					[I, P] = combinationValue;
-					U = P / I;
-					R = U / I;
+					U = crutchBigjs(P, I, "/");
+					R = crutchBigjs(U, I, "/");
 					setCalculatedValues([U, R]);
 					break;
 				case "0110": // Известны напряжение и сопротивление
 					[U, R] = combinationValue;
-					I = U / R;
-					P = U * I;
+					I = crutchBigjs(U, R, "/");
+					P = crutchBigjs(U, I, "*");
 					setCalculatedValues([I, P]);
 					break;
 				case "0101": // Известны напряжение и мощность
 					[U, P] = combinationValue;
-					I = P / U;
-					R = U / I;
+					I = crutchBigjs(P, U, "/");
+					R = crutchBigjs(U, I, "/");
 					setCalculatedValues([I, R]);
 					break;
 				case "0011": // Известны сопротивление и мощность
 					[R, P] = combinationValue;
-					I = Math.sqrt(P / R);
-					U = I * R;
+					I = Math.sqrt(crutchBigjs(P, R, "/"));
+					U = crutchBigjs(I, R, "*");
 					setCalculatedValues([I, U]);
 					break;
 				default:
@@ -121,20 +133,44 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 });
+// Костыли к библиотеке Big.js
+function crutchBigjs(a, b, operator) {
+	const operations = {
+		"*": (x, y) => x.times(y),
+		"/": (x, y) => x.div(y),
+		"+": (x, y) => x.plus(y),
+		"-": (x, y) => x.minus(y),
+		round: (x, y) => x.round(Number(y))
+	};
+	return operations[operator](new Big(a), b).toFixed();
+}
 
 function onPageLoaded() {
-	console.log("Тест console.log");
-	document.addEventListener("DOMContentLoaded", function () {
-		const styleSheet = document.querySelector("style").innerHTML;
-		document.querySelector("style").innerHTML = styleSheet + " /* " + Date.now() + " */";
-	});
-}
-window.onload = function () {
-	document.getElementById("screen-size").textContent = Date.now();
+	cl(crutchBigjs("1", "10000000", "/"));
+	let factor = Math.pow(10, Math.max(20 - Math.floor(value).toString().length, 1));
+	value = Math.round(value * factor) / factor;
 
-	// Здесь сообщение будет показано только для пользователей Internet Explorer, а другие браузеры его не увидят.
-	if (navigator1.userAgent.indexOf("MSIE") !== -1 || navigator.appVersion.indexOf("Trident/") > -1) {
-		document.getElementById("screen-size").innerHTML +=
-			'<p>You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>';
+	//let valueRight = value.toString().match(/\.\d+?(?=0{3})/) || value.toString().match(/\.\d+/);
+
+	value = Math.floor(value) + valueRight;
+
+	console.log("Тест console.log");
+}
+function cl(mess, val) {
+	if (val === undefined) {
+		val = mess;
+		mess = "";
+	} else {
+		mess += "::";
 	}
-};
+
+	const time = new Date().toISOString().slice(11, 23);
+	let cl = document.getElementById("consoleLog").contentDocument.querySelectorAll("a")[0].innerHTML;
+	document.getElementById("consoleLog").contentDocument.querySelectorAll("a")[0].innerHTML =
+		time + " >> " + mess + val + "<br>" + cl;
+	//time + " >> " + mess + val + "<br>" ;
+}
+//const iframe = document.getElementById("myFrame");
+//// Проверяем, что `iframe` загружен, и обращаемся к его содержимому.
+//const link = iframe.contentDocument.querySelectorAll("a")[0];
+//link.innerHTML += "<br>" + time + " >> " + mess + val;
