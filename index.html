@@ -1,138 +1,284 @@
 <!doctype html>
 <html lang="ru">
-	<head>
-		<title>Закон Ома - онлайн калькулятор</title>
-		<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" />
-		<script src="script.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/big.js/6.2.2/big.js"></script>
-		<style>
-			:root {
-				--main-color: #ff7400;
-				--choice-color: #ff740019;
-				--box-shadow-color: #ff740050;
-				--background-color: white;
-			}
 
-			.calcOma-widget {
-				display: grid;
-				grid-template-columns: 1fr 65px;
-				gap: 10px;
-				padding: 10px;
-				background-color: var(--background-color);
-				box-shadow: 0 8px 25px 1px var(--box-shadow-color);
-				max-width: 400px;
-				margin: auto;
-			}
+<head>
+	<title>Закон Ома - онлайн калькулятор</title>
+	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/big.js/6.2.2/big.js"></script>
+	<script>document.addEventListener("DOMContentLoaded", function () {
+			const fields = document.querySelectorAll(".value"); // Находим все поля с данными
+			const selectElements = document.querySelectorAll(".factor"); // Находим все поля с данными
+			let changedFields = []; // Массив для хранения последних двух измененных полей
 
-			.calcOma-widget .value,
+			// Обработчик событий полей данных
+			fields.forEach((field) => {
+				field.addEventListener("input", function () {
+					this.value = this.value.replace(",", ".");
+					this.value = this.value.replace(/[^.\d]/g, ""); // Удаление недопустимых символов
+					this.value = this.value.replace(/^\./, "0."); //Замена ведущей точки на 0.
+					const parts = this.value.split("."); // Разделение по точкам - запрет нескольких точек
+					if (parts.length > 1) {
+						this.value = parts[0] + "." + parts.slice(1).join(""); // Оставляем первую точку, удаляя остальные
+					}
+					this.value = this.value.replace(/^0+(?=\d)/, ""); // Замена ведущих нулей на один ноль, если необходимо
+					this.value = this.value.replace(/^([\d\.]{1,20})?.*/, "$1"); // Запрет ввода более 20 цифр с запятой
+					changeFieldColor(this); // Меняем цвет поля
+				});
+			});
+
+			// Обработчик событий делителей
+			selectElements.forEach((select) => {
+				let factor_old; // Инициализируем переменную предидущего делителя
+				select.addEventListener("click", function () {
+					factor_old = select.value; // получаем значение предидущего делителя при клике по select
+				});
+
+				select.addEventListener("input", function () {
+					// Получаем новое значение делителя
+					factor_new = select.value;
+					value_old = select.previousElementSibling.value;
+					if (value_old > 0) {
+						// Не пересчитываем, если ноль или пусто
+						//select.previousElementSibling.value = (value_old * factor_old) / factor_new;
+						select.previousElementSibling.value = crutchBigjs(
+							crutchBigjs(value_old, factor_old, "*"),
+							factor_new,
+							"/"
+						);
+						// changeFieldColor(this.previousElementSibling);
+					}
+				});
+			});
+
+			// Функция для изменения цвета поля и обновления массива
+			function changeFieldColor(input) {
+				// Если поле уже в массиве, просто возвращаем
+				if (!changedFields.includes(input)) {
+					// Добавляем класс выделения к текущему полю
+					input.classList.add("changed");
+
+					// Добавляем новое поле в массив
+					changedFields.push(input);
+
+					// Если в массиве больше двух полей, удаляем самый старый элемент и убираем класс выделения
+					if (changedFields.length > 2) {
+						const oldestField = changedFields.shift();
+						oldestField.classList.remove("changed");
+					}
+				}
+				if (changedFields.length === 2) {
+					let combination = "";
+					let combinationValue = [];
+					let positionsToBeCalculated = [];
+
+					fields.forEach((field, num) => {
+						if (field.classList.contains("changed")) {
+							combination += "1";
+							combinationValue.push(
+								new Big(field.value).times(field.nextElementSibling.value).toString() // Значение * делитель
+							);
+						} else {
+							combination += "0";
+							positionsToBeCalculated.push(num);
+						}
+					});
+
+					// Функция для установки вычисленных значений с учетом делителя
+					const setCalculatedValues = (calculatedValues) => {
+						calculatedValues.forEach((val, index) => {
+							const field = fields[positionsToBeCalculated[index]];
+							const value = crutchBigjs(val, field.nextElementSibling.value, "/");
+							field.value = crutchBigjs(
+								value,
+								Math.max(20 - Math.floor(value).toString().length, 0),
+								"round"
+							);
+						});
+					};
+
+					let I, U, R, P;
+					switch (combination) {
+						case "1100": // Известны ток и напряжение
+							[I, U] = combinationValue;
+							R = crutchBigjs(U, I, "/");
+							P = crutchBigjs(U, I, "*");
+							setCalculatedValues([R, P]);
+							break;
+						case "1010": // Известны ток и сопротивление
+							[I, R] = combinationValue;
+							U = crutchBigjs(I, R, "*");
+							P = crutchBigjs(U, I, "*");
+							setCalculatedValues([U, P]);
+							break;
+						case "1001": // Известны ток и мощность
+							[I, P] = combinationValue;
+							U = crutchBigjs(P, I, "/");
+							R = crutchBigjs(U, I, "/");
+							setCalculatedValues([U, R]);
+							break;
+						case "0110": // Известны напряжение и сопротивление
+							[U, R] = combinationValue;
+							I = crutchBigjs(U, R, "/");
+							P = crutchBigjs(U, I, "*");
+							setCalculatedValues([I, P]);
+							break;
+						case "0101": // Известны напряжение и мощность
+							[U, P] = combinationValue;
+							I = crutchBigjs(P, U, "/");
+							R = crutchBigjs(U, I, "/");
+							setCalculatedValues([I, R]);
+							break;
+						case "0011": // Известны сопротивление и мощность
+							[R, P] = combinationValue;
+							I = Math.sqrt(crutchBigjs(P, R, "/"));
+							U = crutchBigjs(I, R, "*");
+							setCalculatedValues([I, U]);
+							break;
+						default:
+							console.log("Неизвестная комбинация параметров");
+					}
+				}
+			}
+		});
+		// Костыли к библиотеке Big.js
+		function crutchBigjs(a, b, operator) {
+			const operations = {
+				"*": (x, y) => x.times(y),
+				"/": (x, y) => x.div(y),
+				"+": (x, y) => x.plus(y),
+				"-": (x, y) => x.minus(y),
+				round: (x, y) => x.round(Number(y))
+			};
+			return operations[operator](new Big(a), b).toFixed();
+		}
+
+	</script>
+	<style>
+		:root {
+			--main-color: #ff7400;
+			--choice-color: #ff740019;
+			--box-shadow-color: #ff740050;
+			--background-color: white;
+		}
+
+		span {
+
+			color: var(--main-color);
+		}
+
+		.calcOma-widget {
+			display: grid;
+			grid-template-columns: 1fr 65px;
+			gap: 10px;
+			padding: 10px;
+			background-color: var(--background-color);
+			box-shadow: 0 8px 25px 1px var(--box-shadow-color);
+			max-width: 400px;
+			margin: auto;
+		}
+
+		.calcOma-widget .value,
+		.calcOma-widget .factor {
+			height: 50px;
+			padding: 0 10px;
+			border: 1px solid var(--main-color);
+			border-radius: 5px;
+			font-size: 25px;
+			outline: none;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+		}
+
+		.calcOma-widget .value {
+			width: 100%;
+			color: var(--main-color) !important;
+		}
+
+		.calcOma-widget .value::placeholder {
+			color: var(--box-shadow-color);
+		}
+
+		.calcOma-widget .factor {
+			background: var(--main-color);
+			color: white;
+		}
+
+		/* Стиль для option */
+		.calcOma-widget option {
+			background-color: var(--background-color) !important;
+			color: var(--main-color) !important;
+		}
+
+		.calcOma-widget option:checked {
+			display: none;
+		}
+
+		/* Применение стиля changed */
+		.calcOma-widget .changed {
+			background: var(--choice-color) !important;
+		}
+
+		/* Универсальные стили */
+		.calcOma-widget * {
+			transition: all 0.5s ease;
+			font-family: Roboto, sans-serif;
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		@media (max-width: 340px) {
 			.calcOma-widget .factor {
-				height: 50px;
-				padding: 0 10px;
-				border: 1px solid var(--main-color);
-				border-radius: 5px;
-				font-size: 25px;
-				outline: none;
-				-webkit-appearance: none;
-				-moz-appearance: none;
-				appearance: none;
+				font-size: 18px !important;
 			}
 
 			.calcOma-widget .value {
-				width: 100%;
-				color: var(--main-color) !important;
+				font-size: 23px !important;
 			}
 
-			.calcOma-widget .value::placeholder {
-				color: var(--box-shadow-color);
+			.calcOma-widget {
+				gap: 3px 3px;
+				grid-template-columns: 1fr 53px;
 			}
+		}
+	</style>
+</head>
 
-			.calcOma-widget .factor {
-				background: var(--main-color);
-				color: white;
-			}
+<body>
+	<div class="calcOma-widget">
+		<input class="value" type="text" placeholder="Сила тока (I)" inputmode="decimal" />
+		<select class="factor">
+			<option value="1" selected>A</option>
+			<option value="0.001">mA</option>
+			<option value="0.000001">µA</option>
+		</select>
+		<input class="value" type="text" placeholder="Напряжение (U)" inputmode="decimal" />
+		<select class="factor">
+			<option value="1" selected>V</option>
+			<option value="0.001">mV</option>
+			<option value="0.000001">µV</option>
+		</select>
+		<input class="value" type="text" placeholder="Сопротивление (R)" inputmode="decimal" />
+		<select class="factor">
+			<option value="0.001">mΩ</option>
+			<option value="1" selected>Ω</option>
+			<option value="1000">kΩ</option>
+			<option value="1000000">MΩ</option>
+		</select>
+		<input class="value" type="text" placeholder="Мощность (P)" inputmode="decimal" />
+		<select class="factor">
+			<option value="1" selected>W</option>
+			<option value="1000">kW</option>
+		</select>
+		<span>v.171124</span>
+	</div>
+</body>
 
-			/* Стиль для option */
-			.calcOma-widget option {
-				background-color: var(--background-color) !important;
-				color: var(--main-color) !important;
-			}
-			.calcOma-widget option:checked {
-				display: none;
-			}
-			/* Применение стиля changed */
-			.calcOma-widget .changed {
-				background: var(--choice-color) !important;
-			}
-
-			/* Универсальные стили */
-			.calcOma-widget * {
-				transition: all 0.5s ease;
-				font-family: Roboto, sans-serif;
-				box-sizing: border-box;
-			}
-
-			body {
-				margin: 0;
-				padding: 0;
-				width: 100%;
-				height: 100%;
-				box-sizing: border-box;
-			}
-
-			@media (max-width: 340px) {
-				.calcOma-widget .factor {
-					font-size: 18px !important;
-				}
-				.calcOma-widget {
-					gap: 3px 3px;
-					grid-template-columns: 1fr 53px;
-				}
-			}
-		</style>
-	</head>
-
-	<body onload="onPageLoaded()">
-		<div class="calcOma-widget">
-			<input class="value" type="text" placeholder="Сила тока (I)" inputmode="decimal" />
-			<select class="factor">
-				<option value="1" selected>A</option>
-				<option value="0.001">mA</option>
-				<option value="0.000001">µA</option>
-			</select>
-			<input class="value" type="text" placeholder="Напряжение (U)" inputmode="decimal" />
-			<select class="factor">
-				<option value="1" selected>V</option>
-				<option value="0.001">mV</option>
-				<option value="0.000001">µV</option>
-			</select>
-			<input class="value" type="text" placeholder="Сопротивление (R)" inputmode="decimal" />
-			<select class="factor">
-				<option value="0.001">mΩ</option>
-				<option value="1" selected>Ω</option>
-				<option value="1000">kΩ</option>
-				<option value="1000000">MΩ</option>
-			</select>
-			<input class="value" type="text" placeholder="Мощность (P)" inputmode="decimal" />
-			<select class="factor">
-				<option value="1" selected>W</option>
-				<option value="1000">kW</option>
-			</select>
-		</div>
-		<!--<br /><br /><a style="font-family: monospace; font-size: 19px">console.log():</a>-->
-		<!-- Фрейм с вертикальной прокруткой -->
-		<br /><br />
-		<h1>console.log():</h1>
-		<iframe
-			id="consoleLog"
-			style="overflow-y: scroll; width: 100%; height: 800px"
-			title="Пример содержимого с прокруткой"
-			srcdoc="
-                <html>
-                    <body style='font-family: monospace; font-size: 19px;'>
-                       <a ></a>
-                    </body>
-                </html>
- 					">
-		</iframe>
-	</body>
 </html>
