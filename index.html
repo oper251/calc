@@ -57,60 +57,21 @@
 
 				// Функция для изменения цвета поля и обновления массива
 				function changeFieldColor(input) {
-					
-					// Если кликнули на поле, которое уже выделено последним - меняем местами
-					//if (changedFields[1] === input) {
-					//	return;
-					//}
+					// Если клик на последнее поле - выходим
+					if (changedFields[1] === input) return;
+					// Если клик на первое поле - меняем порядок, выходим
+					if (changedFields[0] === input)
+						return ([changedFields[0], changedFields[1]] = [changedFields[1], changedFields[0]]);
+					// Выделяем новое поле
 					input.classList.add("changed");
-					//// Добавляем новое поле в массив
+					// Удаляем пустые поля (кроме нового)
+					changedFields = changedFields.filter((f) =>
+						!f?.value ? (f.classList.remove("changed"), false) : true
+					);
+					// Добавляем новое поле
 					changedFields.push(input);
-					  if (!changeFieldColor.staticVar) {
-        changeFieldColor.staticVar = 0; // Инициализация при первом вызове
-    }
- if (!oldInput.value)
-					if (changedFields.length > 1 && !changedFields[changedFields.length-2].value) {
-						const oldestField = changedFields.shift();
-						oldestField.classList.remove("changed");
-						return;
-					}
-					oldInput = input;
-					//if (changedFields.length === 2 && !changedFields[1].value) {
-					//	const oldestField = changedFields.pop();
-					//	oldestField.classList.remove("changed");
-					//	return;
-					//}
-
-					//if (changedFields[1] === input)
-					// Если кликнули на последнее поле - ничего не делаем
-					//return;
-					//if ((changedFields.length===1 && !changedFields[0].value) ) {changedFields[0].classList.remove("changed");
-					//changedFields.shift();
-					//return;													  }
-					//if (( changedFields.length===2 && !changedFields[1].value)) {changedFields[1].classList.remove("changed");
-					//	 changedFields.shift();
-					//															 return;
-					//	}
-					// Проверяем и очищаем первое поле если оно пустое
-					//if (changedFields[0] && !changedFields[0].value) {
-					//	changedFields[0].classList.remove("changed");
-					//	changedFields.shift();
-					//}
-					// Добавляем класс выделения к текущему полю
-					//input.classList.add("changed");
-					//
-					//// Если поле уже было в массиве, перемещаем его в конец
-					//const existingIndex = changedFields.indexOf(input);
-					//if (existingIndex !== -1) {
-					//	changedFields.splice(existingIndex, 1);
-					//}
-					//
-
-					//
-					//// Если в массиве больше двух полей, удаляем самый старый элемент и убираем класс выделения
-
+					// Если выделено больше 2 удаляем первый и снимаем выделение
 					if (changedFields.length > 2) {
-						alert(1);
 						const oldestField = changedFields.shift();
 						oldestField.classList.remove("changed");
 					}
@@ -195,10 +156,48 @@
 					btn.addEventListener("click", function () {
 						const input = this.previousElementSibling;
 						input.value = "";
+						input.click();
 						input.focus();
 					});
 				});
+
+				///////////////////////////////////// Вариант 1:
+				const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsUF-_MdVak82QLRDlk2Isq2tyUWU3QTPu-RAK00vOihiuUHd06hX7XtkYE1uTUszM/exec";
+
+				// ID целевой Google Таблицы (можно получить из URL)
+				const TARGET_SPREADSHEET_ID = "1y4_fCqWdzDJcfMHEItXWqxr0ZQKWD8jPz9tRZlVt9K4"; // Замените на ваш ID
+
+				const requestData = {
+					spreadsheetId: TARGET_SPREADSHEET_ID,
+					sheetName: "Лист1", // Любое название листа
+					message: "тест1",
+					pageUrl: window.location.href,
+					userAgent: navigator.userAgent,
+					additionalData: JSON.stringify({
+						screen: `${screen.width}x${screen.height}`,
+						language: navigator.language,
+						referrer: document.referrer
+					})
+				};
+
+				// Отправка данных
+				fetch(SCRIPT_URL, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					body: new URLSearchParams(requestData).toString()
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						console.log("Данные записаны:", data);
+					})
+					.catch((error) => {
+						console.error("Ошибка отправки:", error);
+					});
+				//////////////////////////////////////////////////
 			});
+
 			// Костыли к библиотеке Big.js
 			function crutchBigjs(a, b, operator) {
 				const operations = {
@@ -374,7 +373,7 @@
 				<option value="1000">kW</option>
 			</select>
 
-			<span>v.171125</span>
+			<span>v.181125</span>
 		</div>
 	</body>
 </html>
