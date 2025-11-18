@@ -162,40 +162,22 @@
 				});
 
 				///////////////////////////////////// Вариант 1:
-				const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsUF-_MdVak82QLRDlk2Isq2tyUWU3QTPu-RAK00vOihiuUHd06hX7XtkYE1uTUszM/exec";
+				//ваш ID
+				const SCRIPT_URL =
+					"https://script.google.com/macros/s/AKfycbxsUF-_MdVak82QLRDlk2Isq2tyUWU3QTPu-RAK00vOihiuUHd06hX7XtkYE1uTUszM/exec";
 
 				// ID целевой Google Таблицы (можно получить из URL)
-				const TARGET_SPREADSHEET_ID = "1y4_fCqWdzDJcfMHEItXWqxr0ZQKWD8jPz9tRZlVt9K4"; // Замените на ваш ID
+				const TARGET_SPREADSHEET_ID = "1y4_fCqWdzDJcfMHEItXWqxr0ZQKWD8jPz9tRZlVt9K4"; // Замените на 
 
-				const requestData = {
-					spreadsheetId: TARGET_SPREADSHEET_ID,
-					sheetName: "Лист1", // Любое название листа
-					message: "тест1",
-					pageUrl: window.location.href,
-					userAgent: navigator.userAgent,
-					additionalData: JSON.stringify({
-						screen: `${screen.width}x${screen.height}`,
-						language: navigator.language,
-						referrer: document.referrer
-					})
-				};
-
-				// Отправка данных
 				fetch(SCRIPT_URL, {
 					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					body: new URLSearchParams(requestData).toString()
+					body: "тест"
 				})
-					.then((response) => response.json())
-					.then((data) => {
-						console.log("Данные записаны:", data);
-					})
-					.catch((error) => {
-						console.error("Ошибка отправки:", error);
-					});
+					.then((r) => r.text())
+					.then((response) => console.log("Ответ:", response))
+					.catch((err) => console.log("Отправлено (no-cors)"));
 				//////////////////////////////////////////////////
+				console.log("TheEnd");
 			});
 
 			// Костыли к библиотеке Big.js
