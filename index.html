@@ -161,24 +161,26 @@
 					});
 				});
 
-				///////////////////////////////////// Вариант 1:
+				///////////////////////////////////// Вариант 999:
 				//ваш ID
 				const SCRIPT_URL =
-					"https://script.google.com/macros/s/AKfycbxsUF-_MdVak82QLRDlk2Isq2tyUWU3QTPu-RAK00vOihiuUHd06hX7XtkYE1uTUszM/exec";
+					"https://script.google.com/macros/s/AKfycbxXhS65AWUudx_t-EYm61iRRW6SWJXZPZyn1snMg11NuSXMr8bUY77RLBql5oqI7Vzi/exec";
 
 				// ID целевой Google Таблицы (можно получить из URL)
-				const TARGET_SPREADSHEET_ID = "1y4_fCqWdzDJcfMHEItXWqxr0ZQKWD8jPz9tRZlVt9K4"; // Замените на 
+				const TARGET_SPREADSHEET_ID = "1y4_fCqWdzDJcfMHEItXWqxr0ZQKWD8jPz9tRZlVt9K4";
 
 				fetch(SCRIPT_URL, {
 					method: "POST",
-					//mode: 'no-cors', // ✅ ключевое изменение
-					body: "тест"
-				})
-					.then((r) => r.text())
-					.then((response) => console.log("Ответ:", response))
-					.catch((err) => console.log("Отправлено (no-cors)"));
-				//////////////////////////////////////////////////
-				console.log("TheEnd");
+					mode: "no-cors", // ✅ ключевое изменение
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						message: "тест c сайта",
+						url: window.location.href,
+						userAgent: navigator.userAgent
+					})
+				}).then(() => {
+					console.log("Данные отправлены (no-cors mode)");
+				});
 			});
 
 			// Костыли к библиотеке Big.js
