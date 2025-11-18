@@ -171,6 +171,7 @@
 
 				fetch(SCRIPT_URL, {
 					method: "POST",
+					//mode: 'no-cors', // ✅ ключевое изменение
 					body: "тест"
 				})
 					.then((r) => r.text())
