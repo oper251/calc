@@ -1,8 +1,32 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-version="201125">
 	<head>
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-8CG3BE068T"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+
+			gtag("config", "G-8CG3BE068T");
+		</script>
+		<!-- Для iOS -->
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="CalcOma" />
 		<link rel="apple-touch-icon" href="apple.png" />
 		<!-- 180×180 -->
+
+		<!-- Для Android -->
+		<meta name="mobile-web-app-capable" content="yes" />
+
+		<link rel="manifest" href="manifest.json" />
+		<meta name="theme-color" content="#ff7400" />
+
+		<meta name="msapplication-TileColor" content="#ff7400" />
+		<!-- для Windows -->
 		<link rel="icon" type="image/png" href="apple.png" />
 		<title>Закон Ома - онлайн калькулятор</title>
 		<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" />
@@ -33,26 +57,32 @@
 					});
 				});
 
-				// Обработчик событий делителей
-				selectElements.forEach((select) => {
-					let factor_old; // Инициализируем переменную предидущего делителя
-					select.addEventListener("click", function () {
-						factor_old = select.value; // получаем значение предидущего делителя при клике по select
-					});
+				// Обработчик событий крестиков
+				document.querySelector(".calcOma-widget").addEventListener("click", (e) => {
+					if (e.target.classList.contains("clear-btn")) {
+						const input = e.target.previousElementSibling;
+						input.value = "";
+						input.click();
+						input.focus();
+					}
+					// Обработчик клика - сохраняем старый фактор
+					if (e.target.classList.contains("factor")) {
+						e.target.dataset.oldFactor = e.target.value;
+					}
+				});
 
-					select.addEventListener("input", function () {
-						// Получаем новое значение делителя
-						factor_new = select.value;
-						value_old = select.previousElementSibling.querySelector(".value").value;
-						if (value_old > 0) {
-							// Не пересчитываем, если ноль или пусто
-							select.previousElementSibling.querySelector(".value").value = crutchBigjs(
-								crutchBigjs(value_old, factor_old, "*"),
-								factor_new,
-								"/"
-							);
+				// Обработчик изменения фактора - пересчитываем
+				document.querySelector(".calcOma-widget").addEventListener("change", (e) => {
+					if (e.target.classList.contains("factor")) {
+						const select = e.target;
+						const input = select.previousElementSibling.querySelector(".value");
+						const value_old = input.value;
+						const factor_old = select.dataset.oldFactor;
+						const factor_new = select.value;
+						if (value_old > 0 && factor_old) {
+							input.value = crutchBigjs(crutchBigjs(value_old, factor_old, "*"), factor_new, "/");
 						}
-					});
+					}
 				});
 
 				// Функция для изменения цвета поля и обновления массива
@@ -151,15 +181,6 @@
 						}
 					}
 				}
-				// Обработчики для крестиков
-				document.querySelectorAll(".clear-btn").forEach((btn) => {
-					btn.addEventListener("click", function () {
-						const input = this.previousElementSibling;
-						input.value = "";
-						input.click();
-						input.focus();
-					});
-				});
 
 				// Костыли к библиотеке Big.js
 				function crutchBigjs(a, b, operator) {
@@ -177,48 +198,35 @@
 				///###################################################
 				const SCRIPT_URL =
 					"https://script.google.com/macros/s/AKfycbwdPMx2MngpAFiv_Uv-4Xz4Yiq4LWIe58ITQbewF_wbITU7QinMUVDkv2A5RVUM8-Am/exec";
-				const TARGET_SPREADSHEET_ID = "1y4_fCqWdzDJcfMHEItXWqxr0ZQKWD8jPz9tRZlVt9K4";
-				
-				// Запуск
-				testPost();
+				const SPREADSHEET_ID = "1y4_fCqWdzDJcfMHEItXWqxr0ZQKWD8jPz9tRZlVt9K4";
+
 				async function testPost() {
 					try {
 						const response = await fetch(SCRIPT_URL, {
 							redirect: "follow",
 							method: "POST",
-							body: JSON.stringify({ message: "тест", url: window.location.href }),
-							headers: {
-								"Content-Type": "text/plain;charset=utf-8"
-							}
+							body: JSON.stringify({
+								id: SPREADSHEET_ID,
+								name: "CALC",
+								url: window.location.href,
+								userAgent: navigator.userAgent,
+								platform: navigator.platform,
+								language: navigator.language
+							})
 						});
 
 						const data = await response.json();
-						console.log("✅ Успех! Ответ:", data);
-						 document.querySelector('span.count').textContent = data.count;
+						console.log("✅ Сервер ответил:", data);
+						document.querySelector("span.count").textContent = Number.isInteger(data.count)
+							? "." + data.count
+							: "";
 					} catch (error) {
-						console.log("❌ Ошибка:", error);
+						console.log("❌ Сервер недоступен:", error);
 					}
-				} 
-
-				//sendData();
-				function sendData() {
-					const callbackName = "callback_" + Date.now();
-
-					window[callbackName] = function (response) {
-						console.log("✅ Ответ:", response);
-						delete window[callbackName];
-					};
-
-					const params = new URLSearchParams({
-						message: "тест",
-						url: window.location.href,
-						callback: callbackName
-					});
-
-					const script = document.createElement("script");
-					script.src = `https://script.google.com/macros/s/AKfycby6Y-9nwALUa14ZOLQlq3zKPb8AcfFQitHClkr6KsKPN2ldkNmi-mdSzAuMFL17LL5x/exec?${params}`;
-					document.head.appendChild(script);
 				}
+				// Запуск
+				testPost();
+				document.querySelector("span.ver").textContent = document.documentElement.dataset.version;
 				///###################################################
 				///###################################################
 			});
@@ -325,13 +333,13 @@
 				box-sizing: border-box;
 			}
 
-			@media (max-width: 340px) {
+			@media (max-width: 360px) {
 				.calcOma-widget .factor {
 					font-size: 18px !important;
 				}
 
 				.calcOma-widget .value {
-					font-size: 23px !important;
+					font-size: 20px !important;
 				}
 
 				.calcOma-widget {
@@ -386,7 +394,8 @@
 				<option value="1000">kW</option>
 			</select>
 
-			<span>v.191125_<span class=count></span></span>
+			<span>v.<span class="ver"></span><span class="count"></span></span>
 		</div>
+		<script src="pwa.js"></script>
 	</body>
 </html>
