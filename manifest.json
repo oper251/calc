@@ -2,7 +2,7 @@
   "name": "Калькулятор Ома",
   "short_name": "CalcOma",
   "description": "Онлайн калькулятор закона Ома",
-  "start_url": "/calc",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ff7400",
@@ -16,3 +16,4 @@
   ]
 
 }
+
