@@ -1,0 +1,124 @@
+:root {
+	--main-color: #ff7400;
+	--choice-color: #ff740019;
+	--box-shadow-color: #ff740050;
+	--background-color: white;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+/* Универсальные стили */
+.calcOma-widget * {
+	transition: all 0.5s ease;
+	font-family: Roboto, sans-serif;
+	box-sizing: border-box;
+}
+
+.calcOma-widget {
+	display: grid;
+	grid-template-columns: 1fr 65px;
+	gap: 10px;
+	padding: 10px;
+	background-color: var(--background-color);
+	box-shadow: 0 8px 25px 1px var(--box-shadow-color);
+	max-width: 400px;
+	margin: auto;
+}
+
+.input-container {
+	position: relative;
+	display: flex;
+	align-items: center;
+	
+}
+
+.value,
+.factor {
+	height: 50px;
+	padding: 0 10px;
+	border: 1px solid var(--main-color);
+	border-radius: 5px;
+	font-size: 25px;
+	outline: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.value {
+	width: 100%;
+	color: var(--main-color) !important;
+	padding-right: 35px !important;
+	/* Базовый размер + адаптивная часть */
+	font-size: clamp(16px, 6cqi, 25px) !important;
+}
+
+.value::placeholder {
+	color: var(--box-shadow-color);
+}
+.factor {
+	background: var(--main-color);
+	color: white;
+	text-align: center;
+}
+/* Стиль для option */
+option {
+	background-color: var(--background-color) !important;
+	color: var(--main-color) !important;
+	text-align: left;
+}
+
+option:checked {
+	display: none;
+}
+
+/* Применение стиля changed */
+.changed {
+	background: var(--choice-color) !important;
+}
+
+.clear-btn {
+	position: absolute;
+	right: 10px;
+	color: var(--box-shadow-color);
+	cursor: pointer;
+	font-size: 40px;
+	line-height: 1;
+	padding: 5px;
+	user-select: none;
+}
+
+.clear-btn:hover {
+	color: var(--main-color);
+}
+span {
+	color: var(--main-color);
+	font-size: 10px;
+}
+.row-wide{
+	 grid-column: 1 / span 2;
+}
+
+@media (max-width: 430px) {
+	.calcOma-widget .factor {
+		font-size: 18px !important;
+	}
+
+	/*
+	.value {
+		font-size: 20px !important;
+	}
+	*/
+
+	.calcOma-widget {
+		gap: 3px 3px;
+		grid-template-columns: 1fr 53px;
+		box-shadow: none;
+	}
+}
